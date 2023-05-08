@@ -7,9 +7,12 @@ let copyPath = path.join(__dirname, 'files-copy');
 function copyDir(source, target) {
     fs.access(target, (err) => {
         if (!err) {
-            fs.rmdir(target, (err) => { if (err) throw err });
+            fs.rm(target, { recursive: true, force: true }, (err) => {
+                if (err) throw err;
+                copyDir(source, target);
+            });
         }
-        fs.mkdir(target, (err) => { if (err) throw err });
+        fs.mkdir(target, { recursive: true }, (err) => { if (err) throw err });
     });
 
     fs.readdir(source, (err, files) => {
